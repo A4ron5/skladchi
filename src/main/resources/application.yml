@@ -1,0 +1,10 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/skladchina
+
+application:
+  skladchina:
+    allowed:
+      - role: "EXPERIENCED"
+      - role: "VETERAN"
