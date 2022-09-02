@@ -7,9 +7,9 @@ import ru.safin.skladchina.entities.enums.Role;
 import java.util.List;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @Document("Users")
 public class User extends AbstractEntity {
 
