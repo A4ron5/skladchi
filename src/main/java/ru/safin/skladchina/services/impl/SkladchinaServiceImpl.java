@@ -10,9 +10,11 @@ import ru.safin.skladchina.entities.User;
 import ru.safin.skladchina.exceptions.BusinessException;
 import ru.safin.skladchina.repositories.SkladchinaRepository;
 import ru.safin.skladchina.services.SkaldchinaService;
-import ru.safin.skladchina.validators.PermissionValidator;
+
+import java.util.List;
 
 @Service
+@Slf4j
 public class SkladchinaServiceImpl implements SkaldchinaService {
 
     SkladchinaProperties skladchinaProperties;
@@ -25,18 +27,27 @@ public class SkladchinaServiceImpl implements SkaldchinaService {
 
     @Override
     public Skladchina get(String skladchinaId) {
+        log.info("Get skladchina with id {}", skladchinaId);
         return skladchinaRepository.findById(skladchinaId).orElseThrow(() ->
                 new BusinessException("Not found skladchina with id "));
     }
 
     @Override
+    public List<Skladchina> getAll() {
+        log.info("Get all skladchina");
+        return skladchinaRepository.findAll();
+    }
+
+    @Override
     public Skladchina update(Skladchina skladchina) {
+        log.info("Update skladchina {}", skladchina);
         return skladchinaRepository.save(skladchina);
     }
 
     @Override
     public boolean addParticipant(User user, String skladchinaId) {
         Skladchina skladchina = this.get(skladchinaId);
+        log.info("add participant {} to skladchina {}", user, skladchina);
 
         if (skladchina.getParticipantsCount() >= skladchinaProperties.getMaxParticipants()) {
             throw new BusinessException("Max participants count reached");
