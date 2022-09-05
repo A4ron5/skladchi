@@ -18,11 +18,14 @@ public class Skladchina extends AbstractEntity {
     Integer participantsCount;
     List<User> participants;
     boolean archived;
+    User creator;
 
-    public boolean addParticipant(User participant) {
+    public void addParticipant(User participant) {
         participants.add(participant);
-        participantsCount += 1;
-
-        return true;
     }
+
+    void archive() {
+        archived = true;
+    }
+
 }
