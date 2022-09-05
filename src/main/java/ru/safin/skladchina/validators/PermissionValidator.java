@@ -21,7 +21,7 @@ public class PermissionValidator {
                         .stream().anyMatch(role -> role.equals(user.getRole()))
         )
         {
-            throw new BusinessException("Not allowed role to create skladchina");
+            throw BusinessException.create(("Not allowed role to create skladchina"));
         }
 
     }

@@ -29,7 +29,7 @@ public class SkladchinaServiceImpl implements SkaldchinaService {
     public Skladchina get(String skladchinaId) {
         log.info("Get skladchina with id {}", skladchinaId);
         return skladchinaRepository.findById(skladchinaId).orElseThrow(() ->
-                new BusinessException("Not found skladchina with id "));
+                BusinessException.create("Not found skladchina with id "));
     }
 
     @Override
@@ -50,7 +50,7 @@ public class SkladchinaServiceImpl implements SkaldchinaService {
         log.info("add participant {} to skladchina {}", user, skladchina);
 
         if (skladchina.getParticipantsCount() >= skladchinaProperties.getMaxParticipants()) {
-            throw new BusinessException("Max participants count reached");
+            throw BusinessException.create("Max participants count reached");
         }
 
         skladchina.addParticipant(user);
