@@ -11,6 +11,7 @@ import ru.safin.skladchina.entities.Skladchina;
 import ru.safin.skladchina.entities.User;
 import ru.safin.skladchina.services.SkaldchinaService;
 import ru.safin.skladchina.validators.PermissionValidator;
+import ru.safin.skladchina.validators.UserValidator;
 
 @RestController
 @RequestMapping("/api/skladchina")
@@ -18,23 +19,25 @@ import ru.safin.skladchina.validators.PermissionValidator;
 public class SkladchinaController {
 
     PermissionValidator permissionValidator;
+    UserValidator userValidator;
     SkaldchinaService skaldchinaService;
 
     @PostMapping
-    public ResponseEntity<Skladchina> createSkladchina(
-            @RequestBody String name,
-            @RequestBody Integer participantsCount,
-            @RequestBody User user
-    ) {
+    public ResponseEntity<Skladchina> createSkladchina(@RequestBody String skaldchinaName, String userId) {
+        User user = userValidator.getUserIfExist(userId);
         permissionValidator.canUserCreateSkladchina(user);
 
-        var skladchina = skaldchinaService.create(
-                user,
-                name,
-                participantsCount
-        );
+        Skladchina skladchina = skaldchinaService.create(skaldchinaName, user);
 
         return ResponseEntity.ok(skladchina);
+    }
+
+    @PostMapping
+    public ResponseEntity<Void> appParticipantToSkladchina(String skladchinaId, String userId) {
+        User user = userValidator.getUserIfExist(userId);
+
+
+        return ResponseEntity.ok().build();
     }
 
 }
