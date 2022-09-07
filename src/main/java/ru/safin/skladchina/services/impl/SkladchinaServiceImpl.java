@@ -5,13 +5,12 @@ import org.springframework.stereotype.Service;
 import ru.safin.skladchina.configurations.SkladchinaProperties;
 import ru.safin.skladchina.entities.Skladchina;
 import ru.safin.skladchina.entities.User;
+import ru.safin.skladchina.entities.enums.SkladchinaStatus;
 import ru.safin.skladchina.exceptions.BusinessException;
 import ru.safin.skladchina.repositories.SkladchinaRepository;
 import ru.safin.skladchina.repositories.UserRepository;
 import ru.safin.skladchina.services.AbstractService;
 import ru.safin.skladchina.services.SkaldchinaService;
-
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -32,15 +31,22 @@ public class SkladchinaServiceImpl
     }
 
     @Override
-    public void addParticipant(User user, String skladchinaId) {
+    public void addParticipant(String userId, String skladchinaId) {
         Skladchina skladchina = this.get(skladchinaId);
-        log.info("add participant {} to skladchina {}", user, skladchina);
 
         int participantCount = skladchina.getParticipantsCount();
 
         if (participantCount >= skladchinaProperties.getMaxParticipants()) {
             throw BusinessException.create("Max participants count reached");
         }
+
+        User user = userRepository.findById(userId).orElseThrow(() ->
+                BusinessException.create(
+                        String.format("No user with id=%s found to add participant to skladchina", userId)
+                )
+        );
+
+        log.info("add participant {} to skladchina {}", user, skladchina);
 
         skladchina.addParticipant(user);
         skladchina.setParticipantsCount(participantCount + 1);
@@ -49,18 +55,14 @@ public class SkladchinaServiceImpl
     }
 
     @Override
-    public Skladchina create(Skladchina skladchina, String userId) {
-
-        User user = userRepository.findById(userId).orElseThrow(() ->
-                BusinessException.create(
-                        String.format("No user with id=%s found to create skladchina", userId)
-                )
+    public Skladchina create(String skladchinaName, User user) {
+        return super.create(
+                Skladchina.builder()
+                        .creatorId(user.getId())
+                        .name(skladchinaName)
+                        .status(SkladchinaStatus.CREATED)
+                        .build()
         );
-
-
-        skladchina.setCreator(user);
-
-        return super.create(skladchina);
     }
 
 

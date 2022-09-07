@@ -1,5 +1,6 @@
 package ru.safin.skladchina.entities;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -11,6 +12,7 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Document("Skladchinas")
+@Builder
 public class Skladchina extends AbstractEntity {
 
     String name;
@@ -18,7 +20,7 @@ public class Skladchina extends AbstractEntity {
     Integer participantsCount;
     List<User> participants;
     boolean archived;
-    User creator;
+    String creatorId;
 
     public void addParticipant(User participant) {
         participants.add(participant);
